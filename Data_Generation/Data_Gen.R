@@ -52,7 +52,7 @@ head(sim.structure.repped)
 #data-generating function
 data.gen <- function(n , p , eta.x , eta.y , g , h , seed) {      
        conditions <- data.frame(n = n , p = p , eta.x = eta.x , eta.y = eta.y , 
-                                g = g , h = h)
+                                g = g , h = h , seed = seed)
        betas <- matrix(0 , nrow = p , ncol = 1)
        betas[1,1] <- 0.5
        betas[2,1] <- 1.0
