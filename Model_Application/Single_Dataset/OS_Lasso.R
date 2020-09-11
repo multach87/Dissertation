@@ -81,6 +81,12 @@ OS.lasso<- function(X,Y,lambda.lasso.try,lambda.gamma.try){
                      gamma.est = gamma.est, lambda.opt=lambda.gamma.opt)
 }
 
+#load data
+#data.full <- readRDS()
+single.data <- data.full[[1]]
+X <- single.data$X
+Y <- single.data$Y
+
 #run OS lasso
 lambda.lasso.try <- seq(0.01 , 0.6 , length.out = 100)
 lambda.gamma.try <- seq(1 , 4 , length.out = 50)
