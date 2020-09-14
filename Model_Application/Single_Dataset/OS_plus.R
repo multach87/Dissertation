@@ -109,7 +109,7 @@ OS.lassoPLUS<- function(X,Y,lambda.lasso.try,lambda.gamma.try){
                              stop("X and Y subsets do not match")
                      }  ##return error if the x and y subset indices do not match
                      X.train<- X.new[X.new[ , "subset"] != subset , -ncol(X.new)]
-                     Y.train<- Y[Y.new[ , 2] != subset , ]
+                     Y.train<- Y.new[Y.new[ , 2] != subset , 1]
                      X.test<- X.new[X.new[ , "subset"] == subset , -ncol(X.new)]
                      
                      model.train.temp<- glmnet(X.train,Y.train,family="gaussian",lambda=lambda.lasso.opt)
@@ -147,8 +147,8 @@ OS.lassoPLUS<- function(X,Y,lambda.lasso.try,lambda.gamma.try){
               resid.opt<- Y.orgn-cbind(rep(1,n),X)%*%beta.pre
               nonzero<-which(abs(resid.opt)>=sigma.est*lambda.gamma.opt)
               gamma.est[nonzero]<- resid.opt[nonzero]
-              Y.new <- Y.orgn - gamma.est
-              model.opt<- glmnet(X,Y.new,family="gaussian",lambda=lambda.lasso.opt)
+              Y.new2 <- Y.orgn - gamma.est
+              model.opt<- glmnet(X,Y.new2,family="gaussian",lambda=lambda.lasso.opt)
               beta.post <-  c(model.opt$a0,as.numeric(model.opt$beta))
               tol<- mean((beta.pre-beta.post)^2)
               n.iter<- n.iter+1
@@ -165,5 +165,7 @@ OS.lassoPLUS<- function(X,Y,lambda.lasso.try,lambda.gamma.try){
 #run OS lasso
 lambda.lasso.try <- seq(0.01 , 0.6 , length.out = 100)
 lambda.gamma.try <- seq(1 , 4 , length.out = 50)
+set.seed(501)
 OS.model.plus <- OS.lassoPLUS(X = X , Y = Y , lambda.lasso.try = lambda.lasso.try ,
                               lambda.gamma.try = lambda.gamma.try)
+OS.model.plus
