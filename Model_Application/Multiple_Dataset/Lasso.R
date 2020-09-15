@@ -3,11 +3,11 @@ library(glmnet)
 
 #load data
 #data.full <- readRDS()
-holdout.data <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/debug_data_091120.RData")
+debug.data <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/debug_data_091120.RData")
 #select 10 random datasets from holdout data
 set.seed(10)
 testing.index <- c(sample(x = c(1:960) , size = 10 , replace = FALSE))
-testing_10 <- holdout.data[testing.index]
+testing_10 <- debug.data[testing.index]
 
 #What model information
 
