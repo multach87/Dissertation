@@ -84,7 +84,7 @@ data.gen <- function(n , p , eta.x , eta.y , g , h , seed) {
               err <- ghdist(n = n , g = g , h = h)
        }
        Y <- X %*% betas[ , 1] + err                                    #generate Y values
-       combine <- list(conditions = conditions , Y = Y , X = X , err = err)        #create combined list of all values
+       combine <- list(conditions = conditions , betas = betas , Y = Y , X = X , err = err)        #create combined list of all values
        return(combine)                       #save combined list of all values
 }
 #map data.gen over all iterations of all data conditions
@@ -92,7 +92,7 @@ data.full <- sim.structure.repped %>%
        pmap(data.gen)
 
 #save data to computer
-#saveRDS(data.full , "/Users/Matt Multach/Desktop/Quals_Data/Data/sim_data_110119.RData")
+saveRDS(data.full , "/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/fulldata_091520.RData")
 
 
 
