@@ -33,8 +33,18 @@ sim.structure1 <- as.data.frame(matrix(ncol = 6 , nrow = 96))
 }
 View(sim.structure1)
 #generate repped conditions dataframe
-sim.structure.repped <- as.data.frame(matrix(ncol = 7 , nrow = (96*1000)))
-colnames(sim.structure.repped) <- c("n" , "p" , "eta.x" , "eta.y" , "g" , "h" , "seed")
+sim.structure.repped <- as.data.frame(matrix(ncol = 56 , nrow = (96*1000)))
+colnames(sim.structure.repped) <- c("n" , "p" , "eta.x" , "eta.y" , "g" , "h" , 
+                                    "seed.1" , "seed.2" , "seed.3" , "seed.4" , "seed.5" , 
+                                    "seed.6" , "seed.7" , "seed.8" , "seed.9" , "seed.10" ,
+                                    "seed.11" , "seed.12" , "seed.13" , "seed.14" , "seed.15" ,
+                                    "seed.16" , "seed.17" , "seed.18" , "seed.19" , "seed.20" ,
+                                    "seed.21" , "seed.22" , "seed.23" , "seed.24" , "seed.25" , 
+                                    "seed.26" , "seed.27" , "seed.28" , "seed.29" , "seed.30" ,
+                                    "seed.31" , "seed.32" , "seed.33" , "seed.34" , "seed.35" , 
+                                    "seed.36" , "seed.37" , "seed.38" , "seed.39" , "seed.40" ,
+                                    "seed.41" , "seed.42" , "seed.43" , "seed.44" , "seed.45" , 
+                                    "seed.46" , "seed.47" , "seed.48" , "seed.49" , "seed.50")
 for(i in 1:nrow(sim.structure1)) {
        sim.structure.repped[ ((1000*(i - 1)) + 1): (1000*i), (1:6)] <- 
               purrr::map_dfr(seq_len(1000) , ~sim.structure1[i , ])
@@ -47,18 +57,40 @@ for(i in 1:96) {
 }
 checks.index
 #get seed from sim.structure rather than internally-generating
-sim.structure.repped[ , "seed"] <- rnorm((96*1000))
+seeds <- rnorm(96*1000*50)
+
+sim.structure.repped[ , 7:56] <- seeds
+
 head(sim.structure.repped)
 #data-generating function
-data.gen <- function(n , p , eta.x , eta.y , g , h , seed) {      
+data.gen <- function(n , p , eta.x , eta.y , g , h , seed.1 , seed.2 , seed.3 , seed.4 , seed.5 , 
+                     seed.6 , seed.7 , seed.8 , seed.9 , seed.10 ,
+                     seed.11 , seed.12 , seed.13 , seed.14 , seed.15 ,
+                     seed.16 , seed.17 , seed.18 , seed.19 , seed.20 ,
+                     seed.21 , seed.22 , seed.23 , seed.24 , seed.25 , 
+                     seed.26 , seed.27 , seed.28 , seed.29 , seed.30 ,
+                     seed.31 , seed.32 , seed.33 , seed.34 , seed.35 , 
+                     seed.36 , seed.37 , seed.38 , seed.39 , seed.40 ,
+                     seed.41 , seed.42 , seed.43 , seed.44 , seed.45 , 
+                     seed.46 , seed.47 , seed.48 , seed.49 , seed.50) {      
        conditions <- data.frame(n = n , p = p , eta.x = eta.x , eta.y = eta.y , 
-                                g = g , h = h , seed = seed)
+                                g = g , h = h , seed = seed.1)
+       seeds <- data.frame(seed.1 = seed.1 , seed.2 = seed.2 , seed.3 = seed.3 , seed.4 = seed.4 , seed.5 = seed.5 , 
+                           seed.6 = seed.6 , seed.7 = seed.7 , seed.8 = seed.8 , seed.9 = seed.9 , seed.10 = seed.10 , 
+                           seed.11 = seed.11 , seed.12 = seed.12 , seed.13 = seed.13 , seed.14 = seed.14 , seed.15 = seed.15 , 
+                           seed.16 = seed.16 , seed.17 = seed.17 , seed.18 = seed.18 , seed.19 = seed.19 , seed.20 = seed.20 ,
+                           seed.21 = seed.21 , seed.22 = seed.22 , seed.23 = seed.23 , seed.24 = seed.24 , seed.25 = seed.25 , 
+                           seed.26 = seed.26 , seed.27 = seed.27 , seed.28 = seed.28 , seed.29 = seed.29 , seed.30 = seed.30 ,
+                           seed.31 = seed.31 , seed.32 = seed.32 , seed.33 = seed.33 , seed.34 = seed.34 , seed.35 = seed.35 , 
+                           seed.36 = seed.36 , seed.37 = seed.37 , seed.38 = seed.38 , seed.39 = seed.39 , seed.40 = seed.40 ,
+                           seed.41 = seed.41 , seed.42 = seed.42 , seed.43 = seed.43 , seed.44 = seed.44 , seed.45 = seed.45 , 
+                           seed.46 = seed.46 , seed.47 = seed.47 , seed.48 = seed.48 , seed.49 = seed.49 , seed.50 = seed.50)
        betas <- matrix(0 , nrow = p , ncol = 1)
        betas[1,1] <- 0.5
        betas[2,1] <- 1.0
        betas[3,1] <- 1.5
        betas[4,1] <- 2.0
-       seed <- seed                       #set seed
+       seed <- seed.1                       #set seed
        covar.X <- matrix(rep(0 , p^2) , ncol = p)  #generate covariance matrix
        diag(covar.X) <- 1                          #1's along cavariance diagonal
        X.UC <- rmvnorm(floor((1 - eta.x)*n) , mean = rep(0 , p) , sigma = covar.X)
@@ -84,7 +116,12 @@ data.gen <- function(n , p , eta.x , eta.y , g , h , seed) {
               err <- ghdist(n = n , g = g , h = h)
        }
        Y <- X %*% betas[ , 1] + err                                    #generate Y values
-       combine <- list(conditions = conditions , betas = betas , Y = Y , X = X , err = err)        #create combined list of all values
+       combine <- list(conditions = conditions ,
+                       seeds = seeds , 
+                       betas = betas , 
+                       Y = Y , 
+                       X = X , 
+                       err = err)        #create combined list of all values
        return(combine)                       #save combined list of all values
 }
 #map data.gen over all iterations of all data conditions
@@ -92,7 +129,7 @@ data.full <- sim.structure.repped %>%
        pmap(data.gen)
 
 #save data to computer
-saveRDS(data.full , "/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/fulldata_091520.RData")
+saveRDS(data.full , "/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/fulldata_091620.RData")
 
 
 
