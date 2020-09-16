@@ -8,8 +8,8 @@ library(purrr)
 debug.data <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Dissertation_Git/Data_Generation/Data_Storage/testing10_data_091520.RData")
 
 #lasso application function
-lasso.info <- function(data) {
-       seed <- sample(x = c(1:1000) , size = 1 , replace = FALSE)
+lasso.sim.fnct <- function(data) {
+       seed <- sample(sample(x = c(1:1000000000) , size = 10 , replace = FALSE) , size = 1)
        set.seed(seed)
        #create vector of data conditions
        tracker <- as.vector(unlist(data$conditions)) 
@@ -29,7 +29,7 @@ lasso.info <- function(data) {
                                 lambda = lambda.lasso.try)
        lambda.lasso.opt <- lasso.model$lambda.min
        lasso.coefs <- predict(lasso.model , type = "coefficients" ,
-                              s = lambda.lasso.opt)[2 : (p + 1)]
+                              s = lambda.lasso.opt)[-1]
        #initialize important info dataframe
        #put conditions, model info, and metrics into list
        return(list(condition = as.data.frame(unlist(data$condition) , n = n , p = p , 
@@ -41,20 +41,23 @@ lasso.info <- function(data) {
                                    mpe.sd = lasso.model$cvsd[which(lasso.model$lambda == lambda.lasso.opt)] , 
                                    fpr = length(which(lasso.coefs[c(5:p)] != 0)) / length(lasso.coefs[c(5:p)]) , 
                                    fnr = length(which(lasso.coefs[c(1:4)] == 0)) / length(lasso.coefs[1:4])) , 
-                   important = list(coefs = lasso.coefs , info = data.frame(cbind(n = tracker[1] , p = tracker[2] , 
-                                             eta.x = tracker[3] , eta.y = tracker[4] , 
-                                             g = tracker[5] , h = tracker[6] , data.seed = tracker[7] ,
-                                             model.seed = seed , lambda = lambda.lasso.opt , 
-                                             mpe = lasso.model$cvm[which(lasso.model$lambda == lambda.lasso.opt)] , 
-                                             mpe.sd = lasso.model$cvsd[which(lasso.model$lambda == lambda.lasso.opt)] , 
-                                             fpr = length(which(lasso.coefs[c(5:p)] != 0)) / length(lasso.coefs[c(5:p)]) , 
-                                             fnr = length(which(lasso.coefs[c(1:4)] == 0)) / length(lasso.coefs[1:4]))))))                                   
+                   important = list(diagnostics = data.frame(cbind(data.seed = tracker[7] ,
+                                                                   model.seed = seed) , 
+                                    coefs = lasso.coefs , 
+                                    info = data.frame(cbind(n = tracker[1] , p = tracker[2] , 
+                                                            eta.x = tracker[3] , eta.y = tracker[4] , 
+                                                            g = tracker[5] , h = tracker[6] , data.seed = tracker[7] ,
+                                                            model.seed = seed , lambda = lambda.lasso.opt , 
+                                                            mpe = lasso.model$cvm[which(lasso.model$lambda == lambda.lasso.opt)] , 
+                                                            mpe.sd = lasso.model$cvsd[which(lasso.model$lambda == lambda.lasso.opt)] , 
+                                                            fpr = length(which(lasso.coefs[c(5:p)] != 0)) / length(lasso.coefs[c(5:p)]) , 
+                                                            fnr = length(which(lasso.coefs[c(1:4)] == 0)) / length(lasso.coefs[1:4]))))))                                   
 
 }
 
 #run across full dataset
 lasso.full <- debug.data %>%   
-       map(safely(lasso.info))
+       map(safely(lasso.sim.fnct))
 
 #dealing with error/result from map(safely())
 #create empty lists for error + result
