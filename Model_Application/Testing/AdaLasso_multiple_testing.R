@@ -6,7 +6,7 @@ library(purrr)
 
 #load data
 #data.full <- readRDS()
-testing10.data <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Dissertation_Git/Data_Generation/Data_Storage/testing10_data_091520.RData")
+testing10.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/testing10_data_091720.RData")
 
 
 #adaptive lasso function with two-way CV for selecting both lambda and nu/gamma
@@ -22,7 +22,7 @@ adalasso.sim.fnct <- function(data) {
        X <- data$X
        Y <- data$Y
        p <- data$conditions$p
-       seed.ridge <- sample(sample(x = c(1:1000000000) , size = 1000 , replace = FALSE) , size = 1)
+       seed.ridge <- data$seeds[ , "seed.2"]
        set.seed(seed.ridge)
        #ridge coefs for weighting
        lambda.try <- exp(seq(log(0.01) , log(1400) , length.out = 100))
@@ -32,6 +32,8 @@ adalasso.sim.fnct <- function(data) {
                                    s = lambda.ridge.opt)[-1]
        ##grid of nu/gamma values to try
        nu.try <- exp(seq(log(0.01) , log(10) , length.out = 100))
+       seed.pre.nu <- data$seeds[ , "seed.3"]
+       set.seed(seed.pre.nu)
        seed.nu <- sample(rnorm(n = 1000000000) , size = length(nu.try) , replace = FALSE)
        ##initialize list of best adalasso results from each nu/gamma
        adalasso.nu.cv <- list()
@@ -49,6 +51,7 @@ adalasso.sim.fnct <- function(data) {
                                                        lambda = lambda.adalasso.opt , 
                                                        coefs = best.adalasso.coefs) , 
                                           metrics_and_info = list(model.seed.ridge = seed.ridge ,
+                                                                  model.seed.prenu = seed.pre.nu , 
                                                                   model.seed.nu = seed ,
                                                                   ridge.coefs = best.ridge.coefs ,
                                                                   weights = 1 / abs(best.ridge.coefs)^nu.try[i] , 
@@ -62,24 +65,30 @@ adalasso.sim.fnct <- function(data) {
        }
        #find minimizing nu/gamma
        adalasso.nu.cv.mpe <- numeric()
+       adalasso.seeds.ridge <- numeric()
+       adalasso.seeds.prenu <- numeric()
+       adalasso.seeds.nu <- numeric()
        for(i in 1:length(adalasso.nu.cv)) {
               adalasso.nu.cv.mpe[i] <- adalasso.nu.cv[[i]]$metrics_and_info$mpe
+              adalasso.seeds.ridge[i] <- adalasso.nu.cv[[i]]$metrics_and_info$model.seed.ridge
+              adalasso.seeds.prenu[i] <- adalasso.nu.cv[[i]]$metrics_and_info$model.seed.prenu
+              adalasso.seeds.nu[i] <- adalasso.nu.cv[[i]]$metrics_and_info$model.seed.nu
        }
-       adalass.seeds.ridge <- numeric()
-       adalass.seeds.nu <- numeric()
+
        for(i in 1:length(adalasso.nu.cv)) {
-              adalass.seeds.ridge[i] <- adalasso.nu.cv[[i]]$metrics_and_info$model.seed.ridge
-              adalass.seeds.nu[i] <- adalasso.nu.cv[[i]]$metrics_and_info$model.seed.nu
+              
        }
        #return(adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]])
        #store BEST adalasso result plus all seeds
        ###below is used to check that seeds are regenerated properly and not uniform
        return(list(mpes = adalasso.nu.cv.mpe , 
-                   seeds.ridge = adalass.seeds.ridge , 
-                   seeds.nu = adalass.seeds.nu ,  
+                   seeds.ridge = adalasso.seeds.ridge , 
+                   seeds.prenu = adalasso.seeds.prenu , 
+                   seeds.nu = adalasso.seeds.nu ,  
                    model = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]] , 
                    important = list(diagnostics = data.frame(cbind(data.seed = tracker[7] ,
-                                                                   model.seed.ridge = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.ridge , 
+                                                                   model.seed.ridge = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.ridge ,
+                                                                   model.seed.prenu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.prenu , 
                                                                    model.seed.nu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.nu)) , 
                                     coefs = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$coefs , 
                                     weights = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$weights ,
@@ -91,6 +100,7 @@ adalasso.sim.fnct <- function(data) {
                                                             h = tracker[6] , 
                                                             data.seed = tracker[7] ,
                                                             model.seed.ridge = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.ridge , 
+                                                            model.seed.prenu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.prenu , 
                                                             model.seed.nu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.nu , 
                                                             lambda = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$lambda ,
                                                             nu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$nu ,
@@ -108,7 +118,7 @@ adalasso.sim.fnct <- function(data) {
 
 #run across full dataset
 #run across full dataset
-adalasso.full <- testing10.data %>%   
+adalasso.testing10 <- testing10.data %>%   
        map(safely(adalasso.sim.fnct))
 
 #dealing with error/result from map(safely())
@@ -117,31 +127,32 @@ adalasso.error <- list()
 adalasso.result <- list()
 adalasso.final <- list()
 #split data into separate error and result lists
-for(i in 1:length(adalasso.full)) { 
+for(i in 1:length(adalasso.testing10)) { 
        #iteration tracker
        cat("i = " , i , "\n")
        #fill error list
-       adalasso.error[[i]] <- list(error = adalasso.full[[i]]$error , 
+       adalasso.error[[i]] <- list(error = adalasso.testing10[[i]]$error , 
                                    condition = as.data.frame(unlist(testing10.data[[i]]$condition) , 
                                                              n = n , p = p , 
                                                              eta.x = eta.x , eta.y = eta.y , 
                                                              g = g , h = h , seed = seed))
        #fill in results if results aren't NULL from safely()
-       adalasso.result[[i]] <- adalasso.full[[i]]$result
+       adalasso.result[[i]] <- adalasso.testing10[[i]]$result
        #fill final list
-       if(!is.null(adalasso.full[[i]]$result)) {
-              adalasso.final[[i]] <- adalasso.full[[i]]$result$important
+       if(!is.null(adalasso.testing10[[i]]$result)) {
+              adalasso.final[[i]] <- adalasso.testing10[[i]]$result$important
        } else {
               adalasso.final[[i]] <- adalasso.error[[i]]
        }
 }
 
 #combine diagnostics
-diagnostics <- data.frame(matrix(ncol = 3 , nrow = 10))
-colnames(diagnostics) <- c("data.seed" , "model.seed.ridge" , "model.seed.nu")
+diagnostics <- data.frame(matrix(ncol = 4 , nrow = 10))
+colnames(diagnostics) <- c("data.seed" , "model.seed.ridge" , "model.seed.prenu" , "model.seed.nu")
 for(i in 1:length(adalasso.final)) {
         diagnostics[i , "data.seed"] <- adalasso.final[[i]]$diagnostics$data.seed
         diagnostics[i , "model.seed.ridge"] <- adalasso.final[[i]]$diagnostics$model.seed.ridge
+        diagnostics[i , "model.seed.prenu"] <- adalasso.final[[i]]$diagnostics$model.seed.prenu
         diagnostics[i , "model.seed.nu"] <- adalasso.final[[i]]$diagnostics$model.seed.nu
 }
 
