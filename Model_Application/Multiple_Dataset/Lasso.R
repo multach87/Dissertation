@@ -51,7 +51,13 @@ lasso.sim.fnct <- function(data) {
                                                             mpe = lasso.model$cvm[which(lasso.model$lambda == lambda.lasso.opt)] , 
                                                             mpe.sd = lasso.model$cvsd[which(lasso.model$lambda == lambda.lasso.opt)] , 
                                                             fpr = length(which(lasso.coefs[c(5:p)] != 0)) / length(lasso.coefs[c(5:p)]) , 
-                                                            fnr = length(which(lasso.coefs[c(1:4)] == 0)) / length(lasso.coefs[1:4]))))))                                   
+                                                            fnr = length(which(lasso.coefs[c(1:4)] == 0)) / length(lasso.coefs[1:4])
+                                                            )
+                                                      )
+                                    )
+                                    )
+                   )
+              )                                   
 
 }
 
