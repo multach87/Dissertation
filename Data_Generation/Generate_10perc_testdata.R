@@ -97,4 +97,5 @@ test_data.indices <- c(sample(x = c(1:1000) , size = 10 , replace = FALSE) ,
                        sample(x = c(95001:96000) , size = 10 , replace = FALSE) )
 
 debug.data <- data.full[test_data.indices]
-saveRDS(debug.data , "/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Dissertation_Git/Data_Generation/Data_Storage/debug_data_091520.RData")
+saveRDS(debug.data , "/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/debug_data_091720.RData"
+
