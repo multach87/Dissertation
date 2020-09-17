@@ -77,7 +77,7 @@ lasso.sim.fnct <- function(data) {
 lasso.debug <- debug.data %>%   
        map(safely(lasso.sim.fnct))
 
-#saveRDS(lasso.debug , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/lasso_debug6662.RData")
+#saveRDS(lasso.debug , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/lasso_debug.RData")
 #dealing with error/result from map(safely())
 #create empty lists for error + result
 lasso.error <- list()
