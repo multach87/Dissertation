@@ -1,17 +1,15 @@
 #libraries
 library(glmnet)
+library(purrr)
+library(magrittr)
 
 #load data
 #data.full <- readRDS()
 #full.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/")
-debug.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/debug_data_091720.RData")
+#debug.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/debug_data_091720.RData")
+testing10.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/testing10_data_091720.RData")
 
 
-
-#load data
-single.data <- debug.data[[10]]
-X <- single.data[["X"]]
-Y <- single.data[["Y"]]
 
 #KFold subsetter function
 kfold_subsetter <- function(data , k , seed = 7 , list = FALSE , random = TRUE) {
@@ -89,7 +87,7 @@ kfold_subsetter <- function(data , k , seed = 7 , list = FALSE , random = TRUE) 
 
 
 #OS lasso+
-OSlassoPLUS.sim.funct<- function(data){
+OSlassoPLUS.sim.fnct<- function(data){
         #create simulation tracker
       tracker <- as.vector(unlist(data$conditions)) 
       
@@ -239,6 +237,11 @@ OSlassoPLUS.sim.funct<- function(data){
 
 }
 
-OSlassoPLUS.test <- OSlassoPLUS.sim.funct(single.data)
-OSlassoPLUS.test
+
+#run across full dataset
+OSlassoPLUS.testing10 <- testing10.data %>%   
+        map(safely(OSlassoPLUS.sim.fnct))
+
+#saveRDS(OSlassoPLUS.debug , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/OSLassoPLUS_debug.RData")
+
 
