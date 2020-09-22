@@ -86,56 +86,7 @@ kfold_subsetter <- function(data , k , seed = 7 , list = FALSE , random = TRUE) 
               }
        }
 }
-{
-#with custom function
-n<-length(Y)
-n
-Y.orgn<- Y
-Y.orgn
-lambda.try <- exp(seq(log(0.01) , log(1400) , length.out = 100))
-set.seed(501)
-model.for.cv<- cv.glmnet(X, Y, family="gaussian",lambda=lambda.try)
-lambda.lasso.opt<- model.for.cv$lambda.min
-lambda.lasso.opt
-model.est<- glmnet(X,Y,family="gaussian",lambda=lambda.lasso.opt)
-fit.lasso<-  predict(model.est,X,s=lambda.lasso.opt)
-fit.lasso
-res.lasso<- Y - fit.lasso
-sigma.est<- mad(Y-fit.lasso)
-beta.est<- as.numeric(model.est$beta)
-gamma.est<-rep(0,n)
 
-K <- 5
-X.new <- kfold_subsetter(X , k = K)
-Y.new <- cbind(Y , X.new[ , "subset"])
-n.cv <- n/ K
-CV.error2<-CV.error<-rep(NA,length(lambda.gamma.try))
-Y.pred.cv<-matrix(NA,nrow=length(Y),ncol=length(lambda.gamma.try))
-
-
-#without custom function
-n<-length(Y)
-n
-Y.orgn<- Y
-Y.orgn
-set.seed(501)
-model.for.cv<- cv.glmnet(X, Y, family="gaussian",lambda=lambda.try)
-lambda.lasso.opt<- model.for.cv$lambda.min
-lambda.lasso.opt
-model.est<- glmnet(X,Y,family="gaussian",lambda=lambda.lasso.opt)
-fit.lasso<-  predict(model.est,X,s=lambda.lasso.opt)
-fit.lasso
-res.lasso<- Y - fit.lasso
-sigma.est<- mad(Y-fit.lasso)
-beta.est<- as.numeric(model.est$beta)
-gamma.est<-rep(0,n)
-
-n.fold<- 5
-n.cv <- n/n.fold
-CV.error2<-CV.error<-rep(NA,length(lambda.gamma.try))
-Y.pred.cv<-matrix(NA,nrow=length(Y),ncol=length(lambda.gamma.try))
-Y.new<- Y
-}
 
 #OS lasso+
 OS.lassoPLUS<- function(X,Y,lambda.lasso.try,lambda.gamma.try){
