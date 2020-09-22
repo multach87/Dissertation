@@ -1,6 +1,18 @@
 #libraries
 library(glmnet)
 
+#load data
+#data.full <- readRDS()
+#full.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/")
+debug.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/debug_data_091720.RData")
+
+
+
+#load data
+single.data <- debug.data[[10]]
+X <- single.data[["X"]]
+Y <- single.data[["Y"]]
+
 #winsorized function
 winsorized<- function(x,a=1.5,sigma=1) {
        s<-sigma
@@ -20,7 +32,7 @@ H.lasso<- function(X,Y,lambda.lasso.try,k=1.5){
        fit.lasso<-  predict(model.est,X,s=lambda.lasso.opt)
        res.lasso<- Y-fit.lasso
        sigma.init<- mad(Y-fit.lasso)
-       beta.pre<- c(model.est$a0,as.numeric(model.est$beta))
+       beta.pre<- as.numeric(model.est$beta)
        Y.old<- Y
        tol = 10
        n.iter <- 0
@@ -31,26 +43,38 @@ H.lasso<- function(X,Y,lambda.lasso.try,k=1.5){
               model.est<- glmnet(X,Y.new,family="gaussian",lambda=model.for.cv$lambda.min )
               fit.lasso<-  predict(model.est,X,s=model.for.cv$lambda.min)
               res.lasso<- Y.new-fit.lasso
-              beta.post <- c(model.est$a0,as.numeric(model.est$beta))
+              beta.post <- as.numeric(model.est$beta)
               tol<- sum((beta.pre-beta.post)^2)
               n.iter<- n.iter+1
               beta.pre<- beta.post
        }
        
-       sigma.est<- mean((Y.new-cbind(rep(1,n),X)%*%beta.post)^2)
-       Y.fit<- cbind(rep(1,n),X)%*%beta.post
+       sigma.est<- mean(Y.new- (X%*%beta.post)^2)
+       Y.fit<- X%*%beta.post
        Y.res<- Y.new - Y.fit
        
-       object<- list(coefficient=beta.post,fit=Y.fit, iter = n.iter, sigma.est = sigma.est,
-                     lambda.lasso.opt = model.est$lambda, residual = Y.res)
+       #store number of nonzero coefs
+       st.lad <- sum(beta.post)                                          # number nonzero
+       
+       #generate MSE and sd(MSE) for model
+       mse.lad <- sum((Y - Y.fit) ^ 2) / (n - st.lad - 1)
+       sd.mse.lad <- sd((Y - Y.fit) ^ 2 / (n - st.lad - 1))
+       
+       #store lambda
+       lambda.lasso.opt = model.est$lambda
+       
+       object<- list(coefficient = beta.post , 
+                     fit = Y.fit , 
+                     iter = n.iter , 
+                     sigma.est = sigma.est , 
+                     mpe = mse.lad , 
+                     mpe.sd = sd.mse.lad ,
+                     lambda.opt = lambda.lasso.opt)
+
 }
 
-#load data
-#data.full <- readRDS()
-single.data <- data.full[[1]]
-X <- single.data$X
-Y <- single.data$Y
-
 #run Huber lasso
-lambda.lasso.try <- seq(0.01 , 0.6 , length.out = 100)
+set.seed(501)
+lambda.lasso.try <- exp(seq(log(0.01) , log(1400) , length.out = 100))
 Huber.model <- H.lasso(X = X , Y = Y , lambda.lasso.try = lambda.lasso.try)
+Huber.model
