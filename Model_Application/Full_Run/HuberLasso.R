@@ -111,7 +111,7 @@ H.lasso.sim.fnct <- function(data){
 }
 
 #run across full dataset
-HuberLasso.debug <- full.data %>%   
+HuberLasso.full <- full.data %>%   
         map(safely(H.lasso.sim.fnct))
 
 saveRDS(HuberLasso.full , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/Huberlasso_full.RData")
