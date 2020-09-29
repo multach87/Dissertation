@@ -70,7 +70,7 @@ H.lasso.sim.fnct <- function(data){
        Y.res<- Y.new - Y.fit
        
        #store number of nonzero coefs
-       st.lad <- sum(beta.post)                                          # number nonzero
+       st.lad <- sum(beta.post != 0)                                          # number nonzero
        
        #generate MSE and sd(MSE) for model
        mse.Huber <- sum((Y - Y.fit) ^ 2) / (n - st.lad - 1)
