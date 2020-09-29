@@ -11,6 +11,10 @@ library(pense)
 testing10.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/testing10_data_091720.RData")
 single.data <- testing10.data[[1]]
 
+#load X and Y
+X <- single.data[["X"]]
+Y <- single.data[["Y"]]
+
 #function
 elnet5.sim.funct <- function(data , alpha = 0.5) {
   #create simulation tracker
@@ -250,3 +254,89 @@ elnet9.sim.funct <- function(data , alpha = 0.9) {
   
 }
 
+#test single function
+test.5 <- elnet5.sim.funct(single.data)
+test.75 <- elnet75.sim.funct(single.data)
+test.9 <- elnet9.sim.funct(single.data)
+
+
+
+
+
+
+
+
+
+#test model
+set.seed(501)
+lambda.lasso.try <- exp(seq(log(0.01) , log(1400) , length.out = 100))
+#find minimizing results/use cv
+set.seed(501)
+elnet.cv <- pense_cv(x = X , y = Y , alpha = 0.5 , 
+                     cv_k = 5 , cv_repl = 10 , cv_metric = "rmspe" , 
+                     lambda = lambda.lasso.try , 
+                     intercept = FALSE)
+
+
+#fit/pred values
+Y.fit<- X%*%coef(elnet.cv2)[-1]
+
+#store number of nonzero coefs
+st.lad <- sum(coef(elnet.cv2)[-1] != 0)                                         # number nonzero
+
+#generate MSE and sd(MSE) for model
+n <- nrow(X)
+mse.lad <- sum((Y - Y.fit) ^ 2) / (n - st.lad - 1)
+sd.mse.lad <- sd((Y - Y.fit) ^ 2 / (n - st.lad - 1))
+
+#store lambda
+lambda.lasso.opt <- elnet.cv2$cvres$lambda[which.min(elnet.cv2$cvres$cvavg)]
+
+
+
+
+
+
+
+
+elnet.test <- pense(x = X , y = Y , alpha = 0.5 , 
+                    lambda = lambda.lasso.try , intercept = FALSE)
+#summary(elnet.test) NOT USEFUL STUFF
+elnet.test$estimates[[100]]$beta
+
+
+
+
+
+
+
+
+
+
+#find minimizing results by finding min objf_value - happens to be in order of lambda.lasso.try
+objf_values <- numeric()
+for(i in 1:length(elnet.test$estimates)) {
+  objf_values[i] <- elnet.test$estimates[[i]]$objf_value
+}
+
+
+##try rerunning with randomized lambda.lasso.try
+lambda.lasso.try.random <- sample(lambda.lasso.try , size = length(lambda.lasso.try) , replace = FALSE)
+elnet.random.test <- pense(x = X , y = Y , alpha = 0.75 , 
+                           lambda = lambda.lasso.try.random , 
+                           intercept = FALSE)
+objf_values.random <- numeric()
+for(i in 1:length(elnet.random.test$estimates)) {
+  objf_values.random[i] <- elnet.random.test$estimates[[i]]$objf_value
+}
+which.min(objf_values.random)
+
+
+
+#test adaptive elnet model
+set.seed(501)
+lambda.lasso.try <- exp(seq(log(0.01) , log(1400) , length.out = 100))
+adaelnet.test <- adapense_cv(x = X , y = Y , alpha = 0.5 , 
+                    cv_k = 5 , cv_repl = 10 , 
+                    lambda = lambda.lasso.try)
+summary(adaelnet.test)
