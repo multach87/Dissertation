@@ -12,7 +12,7 @@ debug.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git
 #single.data <- testing10.data[[1]]
 
 #function
-elnet9.sim.funct <- function(data , alpha = 0.9) {
+elnet9.sim.fnct <- function(data , alpha = 0.9) {
   #create simulation tracker
   tracker <- as.vector(unlist(data$conditions)) 
   
