@@ -51,8 +51,8 @@ elnet9.sim.fnct <- function(data , alpha = 0.9) {
   
   #generate MSE and sd(MSE) for model
   n <- nrow(X)
-  mse.elnet <- sum((Y - Y.fit) ^ 2) / (n - st.lad - 1)
-  sd.mse.elnet <- sd((Y - Y.fit) ^ 2 / (n - st.lad - 1))
+  mse.elnet <- sum((Y - Y.fit) ^ 2) / (n - st.elnet - 1)
+  sd.mse.elnet <- sd((Y - Y.fit) ^ 2 / (n - st.elnet - 1))
   
   #store minimizing lambda
   lambda.elnet.opt <- elnet.cv$cvres$lambda[which.min(elnet.cv$cvres$cvavg)]
