@@ -4,9 +4,11 @@ library(purrr)
 library(magrittr)
 
 #load data
-#data.full <- readRDS()
+#data.half <- readRDS()
 #full.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/")
-debug.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/debug_data_091720.RData")
+half.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/500_data_10052020.RData")
+
+#debug.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/debug_data_091720.RData")
 #testing10.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/testing10_data_091720.RData")
 #single.data <- testing10.data[[1]]
 
@@ -213,8 +215,8 @@ OSHlasso.sim.fnct <- function(data){
        )
 }
 
-OSHuberLasso.debug <- debug.data %>%   
+OSHuberLasso.half <- half.data %>%   
         map(safely(OSHlasso.sim.fnct))
 
-saveRDS(OSHuberLasso.debug , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/OSHuberLasso_debug.RData")
+saveRDS(OSHuberLasso.half , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/OSHuberLasso_500.RData")
 
