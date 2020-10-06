@@ -1,4 +1,5 @@
-OSLassoPLUS.debug <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/OSLassoPLUS_debug.RData")
+#OSLassoPLUS.debug <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/OSLassoPLUS_debug.RData")
+OSLassoPLUS.full <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/OSlassoPLUS_full.RData")
 
 #dealing with error/result from map(safely())
 #create empty lists for error + result
