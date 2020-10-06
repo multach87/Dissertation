@@ -193,8 +193,8 @@ OSlassoPLUS.sim.fnct<- function(data){
        st.lad <- sum(beta.post != 0)                                          # number nonzero
        
        #generate MSE and sd(MSE) for model
-       mse.lad <- sum((Y - Y.fit) ^ 2) / (n - st.lad - 1)
-       sd.mse.lad <- sd((Y - Y.fit) ^ 2 / (n - st.lad - 1))
+       mse.OS <- sum((Y - Y.fit) ^ 2) / (n - st.lad - 1)
+       sd.mse.OS <- sd((Y - Y.fit) ^ 2 / (n - st.lad - 1))
        
        
        return(list(model = list(coefficient = beta.post , 
