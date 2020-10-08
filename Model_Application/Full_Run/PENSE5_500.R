@@ -7,9 +7,9 @@ library(pense)
 #load data
 #data.full <- readRDS()
 #full.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/")
-#half.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/500_data_10052020.RData")
+half.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/500_data_10052020.RData")
 #debug.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/debug_data_091720.RData")
-testing10.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/testing10_data_091720.RData")
+#testing10.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/testing10_data_091720.RData")
 #single.data <- testing10.data[[1]]
 
 #function
@@ -93,7 +93,7 @@ pense5.sim.fnct <- function(data , alpha = 0.5) {
   
 }
 
-pense5.half <- testing10.data %>%   
+pense5.half <- half.data %>%   
   map(safely(pense5.sim.fnct))
 
 saveRDS(pense5.half , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/pense5_500.RData")

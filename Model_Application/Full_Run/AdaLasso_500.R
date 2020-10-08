@@ -33,14 +33,14 @@ adalasso.sim.fnct <- function(data) {
                                    s = lambda.ridge.opt)[-1]
        ##grid of nu/gamma values to try
        nu.try <- exp(seq(log(0.01) , log(10) , length.out = 100))
-       seed.pre.nu <- data$seeds[ , "seed.3"]
-       set.seed(seed.pre.nu)
-       seed.nu <- sample(rnorm(n = 1000000000) , size = length(nu.try) , replace = FALSE)
+       #seed.pre.nu <- data$seeds[ , "seed.3"]
+       #set.seed(seed.pre.nu)
+       #seed.nu <- sample(rnorm(n = 1000000000) , size = length(nu.try) , replace = FALSE)
        ##initialize list of best adalasso results from each nu/gamma
        adalasso.nu.cv <- list()
        for(i in 1:length(nu.try)) {
-              seed <- seed.nu[i]
-              set.seed(seed)
+              #seed <- seed.nu[i]
+              #set.seed(seed)
               #single adaptive lasso run with ridge weighting and nu = 1
               adalasso.model <- cv.glmnet(X , Y , family = "gaussian" ,
                                           lambda = lambda.try , 
@@ -52,8 +52,8 @@ adalasso.sim.fnct <- function(data) {
                                                        lambda = lambda.adalasso.opt , 
                                                        coefs = best.adalasso.coefs) , 
                                           metrics_and_info = list(model.seed.ridge = seed.ridge ,
-                                                                  model.seed.prenu = seed.pre.nu , 
-                                                                  model.seed.nu = seed ,
+                                                                  #model.seed.prenu = seed.pre.nu , 
+                                                                  #model.seed.nu = seed ,
                                                                   ridge.coefs = best.ridge.coefs ,
                                                                   weights = 1 / abs(best.ridge.coefs)^nu.try[i] , 
                                                                   nu = nu.try[i] , 
@@ -67,13 +67,13 @@ adalasso.sim.fnct <- function(data) {
        #find minimizing nu/gamma
        adalasso.nu.cv.mpe <- numeric()
        adalasso.seeds.ridge <- numeric()
-       adalasso.seeds.prenu <- numeric()
-       adalasso.seeds.nu <- numeric()
+       #adalasso.seeds.prenu <- numeric()
+       #adalasso.seeds.nu <- numeric()
        for(i in 1:length(adalasso.nu.cv)) {
               adalasso.nu.cv.mpe[i] <- adalasso.nu.cv[[i]]$metrics_and_info$mpe
               adalasso.seeds.ridge[i] <- adalasso.nu.cv[[i]]$metrics_and_info$model.seed.ridge
-              adalasso.seeds.prenu[i] <- adalasso.nu.cv[[i]]$metrics_and_info$model.seed.prenu
-              adalasso.seeds.nu[i] <- adalasso.nu.cv[[i]]$metrics_and_info$model.seed.nu
+              #adalasso.seeds.prenu[i] <- adalasso.nu.cv[[i]]$metrics_and_info$model.seed.prenu
+              #adalasso.seeds.nu[i] <- adalasso.nu.cv[[i]]$metrics_and_info$model.seed.nu
        }
 
        #return(adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]])
@@ -81,13 +81,13 @@ adalasso.sim.fnct <- function(data) {
        ###below is used to check that seeds are regenerated properly and not uniform
        return(list(mpes = adalasso.nu.cv.mpe , 
                    seeds.ridge = adalasso.seeds.ridge , 
-                   seeds.prenu = adalasso.seeds.prenu , 
-                   seeds.nu = adalasso.seeds.nu ,  
+                   #seeds.prenu = adalasso.seeds.prenu , 
+                   #seeds.nu = adalasso.seeds.nu ,  
                    model = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]] , 
                    important = list(diagnostics = data.frame(cbind(data.seed = tracker[7] ,
-                                                                   model.seed.ridge = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.ridge ,
-                                                                   model.seed.prenu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.prenu , 
-                                                                   model.seed.nu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.nu)) , 
+                                                                   model.seed.ridge = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.ridge)) ,
+                                                                   #model.seed.prenu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.prenu , 
+                                                                   #model.seed.nu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.nu)) , 
                                     coefs = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$coefs , 
                                     weights = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$weights ,
                                     info = data.frame(cbind(n = tracker[1] , 
@@ -98,8 +98,8 @@ adalasso.sim.fnct <- function(data) {
                                                             h = tracker[6] , 
                                                             data.seed = tracker[7] ,
                                                             model.seed.ridge = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.ridge , 
-                                                            model.seed.prenu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.prenu , 
-                                                            model.seed.nu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.nu , 
+                                                            #model.seed.prenu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.prenu , 
+                                                            #model.seed.nu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$model.seed.nu , 
                                                             lambda = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$lambda ,
                                                             nu = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$nu ,
                                                             mpe = adalasso.nu.cv[[which.min(adalasso.nu.cv.mpe)]]$metrics_and_info$mpe , 
