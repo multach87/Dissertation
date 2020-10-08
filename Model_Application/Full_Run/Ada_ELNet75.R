@@ -123,6 +123,6 @@ adaelnet75.sim.fnct <- function(data) {
 adaelnet75.half <- half.data %>%   
        map(safely(adaelnet75.sim.fnct))
 
-saveRDS(adaelnet75.half , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/std_adaelnet75_500.RData")
+saveRDS(adaelnet75.half , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/adaelnet75_500.RData")
 
 
