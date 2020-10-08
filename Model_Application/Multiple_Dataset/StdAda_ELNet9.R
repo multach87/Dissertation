@@ -7,8 +7,8 @@ library(purrr)
 #load data
 #data.half <- readRDS()
 #full.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/fulldata_091620.RData")
-#half.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/500_data_10052020.RData")
-testing10.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/testing10_data_091720.RData")
+half.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/500_data_10052020.RData")
+#testing10.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/testing10_data_091720.RData")
 #single.data <- testing10.data[[1]]
 #debug.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/debug_data_091720.RData")
 
@@ -120,9 +120,9 @@ adaelnet9.sim.fnct <- function(data) {
 
 
 #run across debug dataset
-adaelnet9.testing10 <- testing10.data %>%   
+adaelnet9.half <- half.data %>%   
        map(safely(adaelnet9.sim.fnct))
 
-saveRDS(adaelnet9.testing10 , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/std_adaelnet9_TESTING10.RData")
+saveRDS(adaelnet9.half , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/std_adaelnet9_500.RData")
 
 
