@@ -1,4 +1,4 @@
-ELNet9.debug <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/elnet9_debug.RData")
+ELNet9.debug <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/elnet9_DEBUG.RData")
 
 #dealing with error/result from map(safely())
 #create empty lists for error + result
