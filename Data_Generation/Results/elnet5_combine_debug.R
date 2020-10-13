@@ -18,5 +18,8 @@ for(i in 1:length(elnet5.final)) {
 
 mean(elnet5.results[ , "fpr"] , na.rm = T)
 mean(elnet5.results[ , "fnr"] , na.rm = T)
-mean(elnet5.results[ , "mpe"] , na.rm = T)
+mean(elnet5.results[!is.infinite(elnet5.results[ , "mpe"]) , "mpe"] , na.rm = T)
+
+#save results
+saveRDS(elnet5.results , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/MainResults_Storage/elnet5_resultDF_DEBUG.RData")
 
