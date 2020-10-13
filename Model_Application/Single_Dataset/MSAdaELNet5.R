@@ -13,28 +13,6 @@ testing10.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation
 #single.data <- testing10.data[[1]]
 #debug.data <- readRDS("/Users/Matt Multach/Desktop/Dissertation/Dissertation_Git/Data_Generation/Data_Storage/debug_data_091720.RData")
 
-X <- testing10.data[[3]]$X
-Y <- testing10.data[[3]]$Y
-p <- testing10.data[[3]]$conditions$p
-n <- testing10.data[[3]]$conditions$n
-lambda.try <- exp(seq(log(0.01) , log(1400) , length.out = 100))
-nu.try <- exp(seq(log(0.01) , log(10) , length.out = 100))
-msaelnet5.model <- msaenet(x = X , y = Y , family = "gaussian" , 
-                           init = "ridge" , alphas = 0.5 , 
-                           tune = "cv" , nfolds = 5L , 
-                           rule = "lambda.min" , nsteps = 10L , 
-                           tune.nsteps = "max" , scale = nu.try[1])
-beta.post <- coef(msaelnet5.model) #coefficients
-Y.fit <- X%*%beta.post
-#store number of nonzero coefs
-st.lad <- sum(beta.post != 0)                                          # number nonzero
-#generate MSE and sd(MSE) for model
-mse.OS <- sum((Y - Y.fit) ^ 2) / (n - st.lad - 1)
-sd.mse.OS <- sd((Y - Y.fit) ^ 2 / (n - st.lad - 1))
-#save lambdas
-
-
-
 
 #adaptive lasso function with two-way CV for selecting both lambda and nu/gamma
 msaelnet5.sim.fnct <- function(data) { 
@@ -140,8 +118,8 @@ single.test <- msaelnet5.sim.fnct(testing10.data[[1]])
 
 
 #run across debug dataset
-msaelnet5.testing10 <- testing10.data %>%   
-       map(safely(msaelnet5.sim.fnct))
+#msaelnet5.testing10 <- testing10.data %>%   
+#       map(safely(msaelnet5.sim.fnct))
 
 #saveRDS(msaelnet5.half , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/msaelnet5_500.RData")
 
