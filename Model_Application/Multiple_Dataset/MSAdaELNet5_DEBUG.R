@@ -119,6 +119,6 @@ msaelnet5.sim.fnct <- function(data) {
 msaelnet5.debug <- debug.data %>%   
        map(safely(msaelnet5.sim.fnct))
 
-#saveRDS(msaelnet5.half , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/msaelnet5_DEBUG.RData")
+saveRDS(msaelnet5.debug , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/msaelnet5_DEBUG.RData")
 
 
