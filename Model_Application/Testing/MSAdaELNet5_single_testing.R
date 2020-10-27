@@ -24,6 +24,16 @@ msaelnet5.model <- msaenet(x = X , y = Y , family = "gaussian" ,
                            tune = "cv" , nfolds = 5L , 
                            rule = "lambda.min" , nsteps = 10L , 
                            tune.nsteps = "max" , scale = nu.try[1])
+msaelnet75.model <- msaenet(x = X , y = Y , family = "gaussian" , 
+                           init = "ridge" , alphas = 0.75 , 
+                           tune = "cv" , nfolds = 5L , 
+                           rule = "lambda.min" , nsteps = 10L , 
+                           tune.nsteps = "max" , scale = nu.try[1])
+msaelnet9.model <- msaenet(x = X , y = Y , family = "gaussian" , 
+                           init = "ridge" , alphas = 0.9 , 
+                           tune = "cv" , nfolds = 5L , 
+                           rule = "lambda.min" , nsteps = 10L , 
+                           tune.nsteps = "max" , scale = nu.try[1])
 beta.post <- coef(msaelnet5.model) #coefficients
 Y.fit <- X%*%beta.post
 #store number of nonzero coefs

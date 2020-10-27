@@ -10,7 +10,7 @@ colnames(msadaelnet75.results) <- colnames(msadaelnet75.final[[1]]$info)
 msadaelnet75.errors <- numeric()
 
 #fill results
-##Errors at:
+##Errors at: c(32 , 65 , 157)
 for(i in 1:length(msadaelnet75.final)) {
   if(is.null(msadaelnet75.final[[i]]$error)) {
     msadaelnet75.results[i , ] <- msadaelnet75.final[[i]]$info
