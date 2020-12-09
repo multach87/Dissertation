@@ -40,17 +40,17 @@ for(i in 1:length(OSLassoPLUS.HD.debug)) {
 
 #combine results
 #initialize dataframe
-OS.results <- data.frame(matrix(ncol = ncol(OS.final[[1]]$info)))
-colnames(OS.results) <- colnames(OS.final[[1]]$info)
+OS.results <- data.frame(matrix(ncol = ncol(OSLassoPLUS.final[[1]]$info)))
+colnames(OS.results) <- colnames(OSLassoPLUS.final[[1]]$info)
 
 #initialize error vector
 OSLassoPLUS.errors <- numeric()
 
 #fill results
 ##ERRORS AT: 
-for(i in 1:length(OS.final)) {
-  if(is.null(OS.final[[i]]$error)) {
-    OS.results[i , ] <- OS.final[[i]]$info
+for(i in 1:length(OSLassoPLUS.final)) {
+  if(is.null(OSLassoPLUS.final[[i]]$error)) {
+    OS.results[i , ] <- OSLassoPLUS.final[[i]]$info
   } else {
     cat("error at i = " , i , "\n")
     OS.results[i , 1:7] <- HD.data_DEBUG[[i]]$conditions

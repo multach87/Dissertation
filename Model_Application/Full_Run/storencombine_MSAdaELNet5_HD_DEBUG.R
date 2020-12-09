@@ -1,6 +1,6 @@
 #load data
 HD.data_DEBUG <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/HD_debug_data_11302020.RData")
-msaelnet5.HD.debug <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Split_by_n/msaelnet5_HD_DEBUG.RData")
+msaelnet5.HD.debug <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/msaelnet5_HD_DEBUG.RData")
 
 
 
@@ -47,7 +47,7 @@ for(i in 1:length(msaelnet5.final)) {
     msaelnet5.maindf[i , ] <- msaelnet5.final[[i]]$info
   } else {
     cat("error at i = " , i , "\n")
-    msaelnet5.maindf[i , 1:7] <- half.data[[i]]$conditions
+    msaelnet5.maindf[i , 1:7] <- HD.data_DEBUG[[i]]$conditions
     msaelnet5.errors <- c(msaelnet5.errors , i)
     msaelnet5.maindf[i , "fpr"] <- 0 #set fpr = 0 for null models ("errors" when running)
     msaelnet5.maindf[i , "fnr"] <- 1 #set fnr = 1 for null models ("errors" when running)
