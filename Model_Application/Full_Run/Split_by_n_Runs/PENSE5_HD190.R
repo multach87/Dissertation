@@ -9,6 +9,9 @@ HD.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/H
 HD190.data <- HD.data[1:500]
 rm(list = c("HD.data"))
 
+#NOTE: "cv" is still in a lot of the object names. This was to prevent potential human error
+##in removing/replacing those names when moving from pense_cv() --> pense()
+##Also, for ease of switching back to pense_cv() if desired
 #function
 pense5.sim.fnct <- function(data) {
   #create simulation tracker
@@ -34,8 +37,8 @@ pense5.sim.fnct <- function(data) {
   lambda.lasso.try <- exp(lambda.lasso.try)
   
   set.seed(seed.pensecv)
-  pense.cv <- pense_cv(x = X , y = Y , alpha = 0.5 , 
-                       cv_k = 5 , cv_repl = 10 , cv_metric = "rmspe" , 
+  pense.cv <- pense(x = X , y = Y , alpha = 0.5 , 
+                       #cv_k = 5 , cv_repl = 10 , cv_metric = "rmspe" , 
                        lambda = lambda.lasso.try , 
                        intercept = FALSE)
   #coefficients
@@ -86,6 +89,8 @@ pense5.sim.fnct <- function(data) {
   
   
 }
+
+test <- pense5.sim.fnct(HD190.data[[1]])
 
 pense5.HD190 <- HD190.data %>%   
   map(safely(pense5.sim.fnct))
