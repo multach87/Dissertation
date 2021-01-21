@@ -59,8 +59,8 @@ mean(adalassoHD.maindf[-adalassoHD.errors , "fpr"] , na.rm = T) #null models exc
 mean(adalassoHD.maindf[-adalassoHD.errors , "fnr"] , na.rm = T) #null models excluded
 
 #save results
-saveRDS(adalassoHD.result , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Model_Storage/adalassoHD_result_500.RData")
-saveRDS(adalassoHD.error , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/adalassoHD_error_500.RData")
-saveRDS(adalassoHD.final , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/MainResults_Storage/adalassoHD_resultmain_500.RData")
+saveRDS(adalassoHD.result , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Model_Storage/adalassoHD_result_DEBUG.RData")
+saveRDS(adalassoHD.error , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/adalassoHD_error_DEBUG.RData")
+saveRDS(adalassoHD.final , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/MainResults_Storage/adalassoHD_resultmain_DEBUG.RData")
 saveRDS(adalassoHD.maindf , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/MainResults_Storage/adalassoHD_resultDF_500.RData")
 #saveRDS(adalassoHD.errors , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/adalassoHD_errorindices_500.RData")
