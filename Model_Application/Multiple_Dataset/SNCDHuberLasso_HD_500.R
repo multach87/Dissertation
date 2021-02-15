@@ -62,11 +62,11 @@ SNCDHuber.lasso.sim.fnct <- function(data) {
   #return(adaelnet5.nu.cv[[which.min(adaelnet5.nu.cv.mpe)]])
   #store BEST adaelnet5 result plus all seeds
   ###below is used to check that seeds are regenerated properly and not uniform
-  return(list(full = list(everything = huberlasso.nu.cv.full , 
-                          nu.cv.lambda = huberlasso.nu.cv.lambda ,
-                          nu.cv.mse = huberlasso.nu.cv.mse ,
-                          nu.cv.msesd = huberlasso.nu.cv.msesd , 
-                          nu.cv.coefs = huberlasso.nu.cv.coefs) ,
+  return(list(#full = list(everything = huberlasso.nu.cv.full , 
+              #            nu.cv.lambda = huberlasso.nu.cv.lambda ,
+              #            nu.cv.mse = huberlasso.nu.cv.mse ,
+              #            nu.cv.msesd = huberlasso.nu.cv.msesd , 
+              #            nu.cv.coefs = huberlasso.nu.cv.coefs) ,
               important = data.frame(cbind(n = tracker[1] ,
                                            p = tracker[2] ,
                                            eta.x = tracker[3] ,

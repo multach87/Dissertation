@@ -9,7 +9,8 @@ library(pense)
 #HD190.data <- HD.data[1:500]
 #rm(list = c("HD.data"))
 HD.data_DEBUG <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/HD_debug_data_11302020.RData")
-
+HD_DEBUGshort.data <- HD.data_DEBUG[c(1 , 13 , 22 , 34 , 43 , 54 , 64 , 76 , 85 , 97 , 
+                                      106 , 118 , 127 , 139 , 148 , 160)]
 
 #NOTE: "cv" is still in a lot of the object names. This was to prevent potential human error
 ##in removing/replacing those names when moving from pense_cv() --> pense()
@@ -108,7 +109,7 @@ pense5.sim.fnct <- function(data) {
 }
 
 #run across full dataset
-pense5.HD.debug <- HD.data_DEBUG %>%   
+pense5.HD.debug <- HD_DEBUGshort.data %>%   
   map(safely(pense5.sim.fnct))
 
 saveRDS(pense5.HD.debug , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Diagnostics_Storage/pense5_HD_DEBUG.RData")
