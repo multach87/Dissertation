@@ -66,5 +66,5 @@ mean(elnet5.results[!is.infinite(elnet5.results[ , "mpe"]) , "mpe"] , na.rm = T)
 length(elnet5.errors)
 
 #save results
-#saveRDS(elnet5.results , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/MainResults_Storage/elnet5_resultDF_HD_500.RData")
-#saveRDS(elnet5.errors , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/elnet5_errorindices_HD_500.RData")
+saveRDS(elnet5.results , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/MainResults_Storage/elnet5_resultDF_HD_500.RData")
+saveRDS(elnet5.errors , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Error_Storage/elnet5_errorindices_HD_500.RData")
