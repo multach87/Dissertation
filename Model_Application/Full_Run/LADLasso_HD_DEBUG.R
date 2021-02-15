@@ -26,8 +26,8 @@ ladlasso.sim.fnct <- function(data) {
        n <- length(Y)
        
        #set seed for generating ridge coefficients for weighting
-       seed.ridge <- data$seeds[ , "seed.4"]
-       set.seed(seed.ridge)
+       #seed.ridge <- data$seeds[ , "seed.4"]
+       #set.seed(seed.ridge)
        
        #set possible lambda and nu/gamma values
        lambda.try <- seq(log(0.01) , log(1400) , length.out = 100)
@@ -99,7 +99,7 @@ ladlasso.sim.fnct <- function(data) {
                                                             st = st.lad) , 
                                           metrics_and_info = list(BIC.min = min(BIC) , 
                                                                   which.BIC.min = step , 
-                                                                  model.seed.ridge = seed.ridge ,
+                                                                  #model.seed.ridge = seed.ridge ,
                                                                   #model.seed.prenu = seed.pre.nu , 
                                                                   #model.seed.nu = seed ,
                                                                   ridge.coefs = best.ridge.coefs ,
@@ -115,14 +115,14 @@ ladlasso.sim.fnct <- function(data) {
        }
        #find/store minimizing nu/gamma, seeds, minimized BIC/step
        ladlasso.nu.cv.mpe <- numeric()
-       ladlasso.seeds.ridge <- numeric()
+       #ladlasso.seeds.ridge <- numeric()
        #ladlasso.seeds.prenu <- numeric()
        #ladlasso.seeds.nu <- numeric()
        ladlasso.BIC.mins <- numeric()
        ladlasso.which.BIC.mins <- numeric()
        for(i in 1:length(ladlasso.nu.cv)) {
               ladlasso.nu.cv.mpe[i] <- ladlasso.nu.cv[[i]]$metrics_and_info$mpe
-              ladlasso.seeds.ridge[i] <- ladlasso.nu.cv[[i]]$metrics_and_info$model.seed.ridge
+              #ladlasso.seeds.ridge[i] <- ladlasso.nu.cv[[i]]$metrics_and_info$model.seed.ridge
               #ladlasso.seeds.nu[i] <- ladlasso.nu.cv[[i]]$metrics_and_info$model.seed.nu
               #ladlasso.seeds.prenu[i] <- ladlasso.nu.cv[[i]]$metrics_and_info$model.seed.prenu
               ladlasso.BIC.mins[i] <- ladlasso.nu.cv[[i]]$metrics_and_info$BIC.min
@@ -133,12 +133,12 @@ ladlasso.sim.fnct <- function(data) {
        return(list(BICs = ladlasso.BIC.mins , 
                    which.BICs = ladlasso.which.BIC.mins ,
                    mpes = ladlasso.nu.cv.mpe , 
-                   seeds.ridge = ladlasso.seeds.ridge , 
+                   #seeds.ridge = ladlasso.seeds.ridge , 
                    #seeds.prenu = ladlasso.seeds.prenu ,
                    #seeds.nu = ladlasso.seeds.nu ,  
                    model = ladlasso.nu.cv[[which.min(ladlasso.nu.cv.mpe)]] ,
-                   important = list(diagnostics = data.frame(cbind(data.seed = tracker[7] ,
-                                                                   model.seed.ridge = ladlasso.nu.cv[[which.min(ladlasso.nu.cv.mpe)]]$metrics_and_info$model.seed.ridge)) , 
+                   important = list(diagnostics = data.frame(cbind(data.seed = tracker[7])) ,
+                                                                   #model.seed.ridge = ladlasso.nu.cv[[which.min(ladlasso.nu.cv.mpe)]]$metrics_and_info$model.seed.ridge)) , 
                                                                    #model.seed.prenu = ladlasso.nu.cv[[which.min(ladlasso.nu.cv.mpe)]]$metrics_and_info$model.seed.prenu , 
                                                                    #model.seed.nu = ladlasso.nu.cv[[which.min(ladlasso.nu.cv.mpe)]]$metrics_and_info$model.seed.nu)) , 
                                     coefs = ladlasso.nu.cv[[which.min(ladlasso.nu.cv.mpe)]]$metrics_and_info$coefs , 
@@ -150,7 +150,7 @@ ladlasso.sim.fnct <- function(data) {
                                                             g = tracker[5] , 
                                                             h = tracker[6] , 
                                                             data.seed = tracker[7] ,
-                                                            model.seed.ridge = ladlasso.nu.cv[[which.min(ladlasso.nu.cv.mpe)]]$metrics_and_info$model.seed.ridge , 
+                                                            #model.seed.ridge = ladlasso.nu.cv[[which.min(ladlasso.nu.cv.mpe)]]$metrics_and_info$model.seed.ridge , 
                                                             #model.seed.prenu = ladlasso.nu.cv[[which.min(ladlasso.nu.cv.mpe)]]$metrics_and_info$model.seed.prenu , 
                                                             #model.seed.nu = ladlasso.nu.cv[[which.min(ladlasso.nu.cv.mpe)]]$metrics_and_info$model.seed.nu) ,
                                                             lambda = ladlasso.nu.cv[[which.min(ladlasso.nu.cv.mpe)]]$metrics_and_info$lambda ,

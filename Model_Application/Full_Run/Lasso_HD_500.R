@@ -5,7 +5,7 @@ library(purrr)
 
 #load data
 #data.full <- readRDS()
-HD.data_DEBUG <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/HD_debug_data_11302020.RData")
+HD.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/HDSparsedata_112320.RData")
 
 
 #lasso application function
@@ -74,9 +74,9 @@ lasso.sim.fnct <- function(data) {
 
 
 #run across full dataset
-lasso.HD.debug <- HD.data_DEBUG %>%   
+lasso.HD.HALF <- HD.data %>%   
        map(safely(lasso.sim.fnct))
 
-saveRDS(lasso.HD.debug , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Diagnostics_Storage//lasso_HD_DEBUG.RData")
+saveRDS(lasso.HD.HALF , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/lasso_HD_500.RData")
 
 
