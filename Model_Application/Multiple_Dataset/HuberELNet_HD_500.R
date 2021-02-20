@@ -62,11 +62,9 @@ SNCDHuber.elnet5.sim.fnct <- function(data) {
   #return(adaelnet5.nu.cv[[which.min(adaelnet5.nu.cv.mpe)]])
   #store BEST adaelnet5 result plus all seeds
   ###below is used to check that seeds are regenerated properly and not uniform
-  return(list(#full = list(everything = huberelnet5.nu.cv.full , 
-              #            nu.cv.lambda = huberelnet5.nu.cv.lambda ,
-              #            nu.cv.mse = huberelnet5.nu.cv.mse ,
-              #            nu.cv.msesd = huberelnet5.nu.cv.msesd , 
-              #            nu.cv.coefs = huberelnet5.nu.cv.coefs) ,
+  return(list(full = list(ridge.coefs = best.ridge.coefs ,
+                          weights.opt = weights.opt , 
+                          coefs.opt = as.numeric(coefs.opt)) ,
               important = data.frame(cbind(n = tracker[1] ,
                                            p = tracker[2] ,
                                            eta.x = tracker[3] ,
@@ -91,4 +89,4 @@ SNCDHuber.elnet5.sim.fnct <- function(data) {
 huberelnet5.HD <- HD.data %>%   
   map(safely(SNCDHuber.elnet5.sim.fnct))
 
-saveRDS(huberelnet5.HD , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/Huberelnet5_HD_500.RData")
+saveRDS(huberelnet5.HD , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/Huberelnet5_HD_500_COEFS.RData")

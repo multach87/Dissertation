@@ -5,9 +5,9 @@ library(magrittr)
 library(purrr)
 
 #load data
-HALF.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Split_by_n/distr200.RData")
+HALF.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Split_by_n/distr50.RData")
 
-SNCDLAD.lasso.sim.fnct <- function(data) { 
+SNCDLAD.elnet.sim.fnct <- function(data) { 
   #create simulation tracker
   tracker <- as.vector(unlist(data$conditions)) 
   #print tracker of status
@@ -32,39 +32,40 @@ SNCDLAD.lasso.sim.fnct <- function(data) {
                               s = lambda.ridge.opt)[-1]
   ##grid of nu/gamma values to try
   nu.try <- exp(seq(log(0.01) , log(10) , length.out = 100))
-  ##initialize full list of LAD lasso results from each nu/gamma
-  LADlasso.nu.cv.full <- list()
+  ##initialize full list of LAD elnet results from each nu/gamma
+  LADelnet.nu.cv.full <- list()
   ##initialize matrices of metrics and minimizing results
-  LADlasso.nu.cv.lambda <- numeric()
-  LADlasso.nu.cv.mse <- numeric()
-  LADlasso.nu.cv.msesd <- numeric()
-  LADlasso.nu.cv.coefs <- list()
+  LADelnet.nu.cv.lambda <- numeric()
+  LADelnet.nu.cv.mse <- numeric()
+  LADelnet.nu.cv.msesd <- numeric()
+  LADelnet.nu.cv.coefs <- list()
   ##Loop over nu/gamma values for CV, storing minimizing lambda within each nu/gamma
   for(i in 1:length(nu.try)) {
-    invisible(capture.output(LADlasso.nu.cv.full[[i]] <- cv.hqreg(X = X , y = Y , method = "quantile" , tau = 0.5 , 
-                                                                  lambda = lambda.try , alpha = 1.0 , preprocess = "standardize" , 
+    invisible(capture.output(LADelnet.nu.cv.full[[i]] <- cv.hqreg(X = X , y = Y , method = "quantile" , tau = 0.5 , 
+                                                                  lambda = lambda.try , alpha = 0.5 , preprocess = "standardize" , 
                                                                   screen = "SR" , penalty.factor = 1 / abs(best.ridge.coefs)^nu.try[i] , 
                                                                   FUN = "hqreg" , type.measure = "mse")))
-    LADlasso.nu.cv.mse[i] <- min(LADlasso.nu.cv.full[[i]]$cve)
-    LADlasso.nu.cv.msesd[i] <- LADlasso.nu.cv.full[[i]]$cvse[which.min(LADlasso.nu.cv.full[[i]]$cve)]
-    LADlasso.nu.cv.lambda[i] <- LADlasso.nu.cv.full[[i]]$lambda.min
-    LADlasso.nu.cv.coefs[[i]] <- LADlasso.nu.cv.full[[i]]$fit$beta[-1 , which.min(LADlasso.nu.cv.full[[i]]$cve)]
+    LADelnet.nu.cv.mse[i] <- min(LADelnet.nu.cv.full[[i]]$cve)
+    LADelnet.nu.cv.msesd[i] <- LADelnet.nu.cv.full[[i]]$cvse[which.min(LADelnet.nu.cv.full[[i]]$cve)]
+    LADelnet.nu.cv.lambda[i] <- LADelnet.nu.cv.full[[i]]$lambda.min
+    LADelnet.nu.cv.coefs[[i]] <- LADelnet.nu.cv.full[[i]]$fit$beta[-1 , which.min(LADelnet.nu.cv.full[[i]]$cve)]
   }
   
   #specify minimizing nu value and resulting model info
-  nu.opt <- nu.try[which.min(LADlasso.nu.cv.mse)]
-  lambda.opt <- LADlasso.nu.cv.lambda[which.min(LADlasso.nu.cv.mse)]
+  nu.opt <- nu.try[which.min(LADelnet.nu.cv.mse)]
+  lambda.opt <- LADelnet.nu.cv.lambda[which.min(LADelnet.nu.cv.mse)]
   weights.opt <- 1 / abs(best.ridge.coefs)^nu.opt
-  coefs.opt <- LADlasso.nu.cv.coefs[[which.min(LADlasso.nu.cv.mse)]]
-  LADlasso.mse.min <- min(LADlasso.nu.cv.mse)
-  LADlasso.mse.min.se <- LADlasso.nu.cv.msesd[which.min(LADlasso.nu.cv.mse)]
+  coefs.opt <- LADelnet.nu.cv.coefs[[which.min(LADelnet.nu.cv.mse)]]
+  LADelnet.mse.min <- min(LADelnet.nu.cv.mse)
+  LADelnet.mse.min.se <- LADelnet.nu.cv.msesd[which.min(LADelnet.nu.cv.mse)]
   
-  #return(adalasso5.nu.cv[[which.min(adalasso5.nu.cv.mpe)]])
-  #store BEST adalasso5 result plus all seeds
+  #return(adaelnet5.nu.cv[[which.min(adaelnet5.nu.cv.mpe)]])
+  #store BEST adaelnet5 result plus all seeds
   ###below is used to check that seeds are regenerated properly and not uniform
-  return(list(full = list(ridge.coefs = best.ridge.coefs ,
-                          weights.opt = weights.opt , 
-                          coefs.opt = coefs.opt) ,
+  return(list(full = list(
+                 ridge.coefs = best.ridge.coefs ,
+                 weights.opt = weights.opt , 
+                 coefs.opt = coefs.opt) ,
     important = data.frame(cbind(n = tracker[1] ,
                                  p = tracker[2] ,
                                  eta.x = tracker[3] ,
@@ -72,11 +73,11 @@ SNCDLAD.lasso.sim.fnct <- function(data) {
                                  g = tracker[5] ,
                                  h = tracker[6] ,
                                  data.seed = tracker[7] ,
-                                 alpha = 1.0 ,
+                                 alpha = 0.5 ,
                                  lambda = lambda.opt ,
                                  nu = nu.opt ,
-                                 mpe = LADlasso.mse.min ,
-                                 mpe.sd = LADlasso.mse.min.se ,
+                                 mpe = LADelnet.mse.min ,
+                                 mpe.sd = LADelnet.mse.min.se ,
                                  fpr = length(which(coefs.opt[c(5:p)] != 0)) / length(coefs.opt[c(5:p)]) , 
                                  fnr = length(which(coefs.opt[c(1:4)] == 0)) / length(coefs.opt[1:4])
     )
@@ -86,7 +87,7 @@ SNCDLAD.lasso.sim.fnct <- function(data) {
 }
 
 #run across full dataset
-LADlasso.HALF <- HALF.data %>%   
-  map(safely(SNCDLAD.lasso.sim.fnct))
+LADelnet.HALF <- HALF.data %>%   
+  map(safely(SNCDLAD.elnet.sim.fnct))
 
-saveRDS(LADlasso.HALF , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Split_by_n/SNCDLADlasso_distr200_500_COEFS.RData")
+saveRDS(LADelnet.HALF , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Split_by_n/SNCDLADelnet_distr50_500.RData")

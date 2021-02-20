@@ -32,7 +32,7 @@ SNCDLAD.lasso.sim.fnct <- function(data) {
                               s = lambda.ridge.opt)[-1]
   ##grid of nu/gamma values to try
   nu.try <- exp(seq(log(0.01) , log(10) , length.out = 100))
-  ##initialize full list of LAD elnet results from each nu/gamma
+  ##initialize full list of LAD lasso results from each nu/gamma
   LADlasso.nu.cv.full <- list()
   ##initialize matrices of metrics and minimizing results
   LADlasso.nu.cv.lambda <- numeric()
@@ -42,9 +42,9 @@ SNCDLAD.lasso.sim.fnct <- function(data) {
   ##Loop over nu/gamma values for CV, storing minimizing lambda within each nu/gamma
   for(i in 1:length(nu.try)) {
     invisible(capture.output(LADlasso.nu.cv.full[[i]] <- cv.hqreg(X = X , y = Y , method = "quantile" , tau = 0.5 , 
-                           lambda = lambda.try , alpha = 1 , preprocess = "standardize" , 
-                           screen = "SR" , penalty.factor = 1 / abs(best.ridge.coefs)^nu.try[i] , 
-                           FUN = "hqreg" , type.measure = "mse")))
+                                                                  lambda = lambda.try , alpha = 1.0 , preprocess = "standardize" , 
+                                                                  screen = "SR" , penalty.factor = 1 / abs(best.ridge.coefs)^nu.try[i] , 
+                                                                  FUN = "hqreg" , type.measure = "mse")))
     LADlasso.nu.cv.mse[i] <- min(LADlasso.nu.cv.full[[i]]$cve)
     LADlasso.nu.cv.msesd[i] <- LADlasso.nu.cv.full[[i]]$cvse[which.min(LADlasso.nu.cv.full[[i]]$cve)]
     LADlasso.nu.cv.lambda[i] <- LADlasso.nu.cv.full[[i]]$lambda.min
@@ -59,36 +59,35 @@ SNCDLAD.lasso.sim.fnct <- function(data) {
   LADlasso.mse.min <- min(LADlasso.nu.cv.mse)
   LADlasso.mse.min.se <- LADlasso.nu.cv.msesd[which.min(LADlasso.nu.cv.mse)]
   
-  #return(adaelnet5.nu.cv[[which.min(adaelnet5.nu.cv.mpe)]])
-  #store BEST adaelnet5 result plus all seeds
+  #return(adalasso5.nu.cv[[which.min(adalasso5.nu.cv.mpe)]])
+  #store BEST adalasso5 result plus all seeds
   ###below is used to check that seeds are regenerated properly and not uniform
-  return(list(#full = list(everything = LADlasso.nu.cv.full , 
-              #            nu.cv.lambda = LADlasso.nu.cv.lambda ,
-              #            nu.cv.mse = LADlasso.nu.cv.mse ,
-              #            nu.cv.msesd = LADlasso.nu.cv.msesd , 
-              #            nu.cv.coefs = LADlasso.nu.cv.coefs) ,
-              important = data.frame(cbind(n = tracker[1] ,
-                                           p = tracker[2] ,
-                                           eta.x = tracker[3] ,
-                                           eta.y = tracker[4] ,
-                                           g = tracker[5] ,
-                                           h = tracker[6] ,
-                                           data.seed = tracker[7] ,
-                                           alpha = 1 ,
-                                           lambda = lambda.opt ,
-                                           nu = nu.opt ,
-                                           mpe = LADlasso.mse.min ,
-                                           mpe.sd = LADlasso.mse.min.se ,
-                                           fpr = length(which(coefs.opt[c(5:p)] != 0)) / length(coefs.opt[c(5:p)]) , 
-                                           fnr = length(which(coefs.opt[c(1:4)] == 0)) / length(coefs.opt[1:4])
-                                             )
-                                     )
-              )
-         )
+  return(list(full = list(
+                 ridge.coefs = best.ridge.coefs ,
+                 weights.opt = weights.opt , 
+                 coefs.opt = coefs.opt) ,
+    important = data.frame(cbind(n = tracker[1] ,
+                                 p = tracker[2] ,
+                                 eta.x = tracker[3] ,
+                                 eta.y = tracker[4] ,
+                                 g = tracker[5] ,
+                                 h = tracker[6] ,
+                                 data.seed = tracker[7] ,
+                                 alpha = 1.0 ,
+                                 lambda = lambda.opt ,
+                                 nu = nu.opt ,
+                                 mpe = LADlasso.mse.min ,
+                                 mpe.sd = LADlasso.mse.min.se ,
+                                 fpr = length(which(coefs.opt[c(5:p)] != 0)) / length(coefs.opt[c(5:p)]) , 
+                                 fnr = length(which(coefs.opt[c(1:4)] == 0)) / length(coefs.opt[1:4])
+    )
+    )
+  )
+  )
 }
 
 #run across full dataset
 LADlasso.HALF <- HALF.data %>%   
   map(safely(SNCDLAD.lasso.sim.fnct))
 
-saveRDS(LADlasso.HALF , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Split_by_n/SNCDLADLasso_outlier100_500.RData")
+saveRDS(LADlasso.HALF , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Split_by_n/SNCDLADlasso_outlier100_500_COEFS.RData")
