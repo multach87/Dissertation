@@ -5,7 +5,7 @@ library(purrr)
 
 #load data
 #data.full <- readRDS()
-GDP <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Applied_Datasets/gdp_split.RData")
+ribo <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Applied_Datasets/ribo_split.RData")
 
 
 #lasso application function
@@ -17,10 +17,10 @@ lasso.sim.fnct <- function(data) {
         cat("iteration = " , data$track , ";\n")
       
        #load X, Y, p, n
-       X <- as.matrix(data$train[ , -c(1 , 15)])
+       X <- as.matrix(data$train[ , -1])
        #cat("X = " , X , "\n")
        #cat("class(X) = " , class(X) , "\n")
-       Y <- data$train$y.net
+       Y <- data$train[ , 1]
        #cat("class(Y) = " , class(Y) , "\n")
        n <- length(Y)
        
@@ -28,16 +28,16 @@ lasso.sim.fnct <- function(data) {
        lambda.lasso.try <- exp(seq(log(0.01) , log(1400) , length.out = 100))
        #lasso model
        lasso.model <- cv.glmnet(X , Y , family = "gaussian" ,
-                                lambda = lambda.lasso.try , alpha = 1.0)
+                                lambda = lambda.lasso.try)
        lambda.lasso.opt <- lasso.model$lambda.min
        lasso.coefs <- predict(lasso.model , type = "coefficients" ,
                               s = lambda.lasso.opt)[-1]
        n.coefs <- sum(lasso.coefs != 0)
        
        #specify test data
-       test.X <- as.matrix(data$test[ , -c(1 , 15)])
+       test.X <- as.matrix(data$test[ , -1])
        #cat("class(test.X) = " , class(test.X) , "\n")
-       test.Y <- data$test$y.net
+       test.Y <- data$test[ , 1]
        
        #apply to test set
        pred.y <- test.X %*% lasso.coefs
@@ -64,9 +64,9 @@ lasso.sim.fnct <- function(data) {
 
 
 #run across full dataset
-lasso.full <- GDP %>%   
+lasso.full <- ribo %>%   
        map(safely(lasso.sim.fnct))
 
-saveRDS(lasso.full , "/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Applied_Storage/lasso_GDP.RData")
+saveRDS(lasso.full , "/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Applied_Storage/lasso_ribo.RData")
 
 

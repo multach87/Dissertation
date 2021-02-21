@@ -8,8 +8,8 @@ library(purrr)
 GDP <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Applied_Datasets/gdp_split.RData")
 
 
-#lasso application function
-lasso.sim.fnct <- function(data) {
+#elnet application function
+elnet.sim.fnct <- function(data) {
         #create simulation tracker
         #tracker <- as.vector(unlist(data$conditions)) 
         
@@ -25,14 +25,14 @@ lasso.sim.fnct <- function(data) {
        n <- length(Y)
        
        #set grid of lambda values
-       lambda.lasso.try <- exp(seq(log(0.01) , log(1400) , length.out = 100))
-       #lasso model
-       lasso.model <- cv.glmnet(X , Y , family = "gaussian" ,
-                                lambda = lambda.lasso.try , alpha = 1.0)
-       lambda.lasso.opt <- lasso.model$lambda.min
-       lasso.coefs <- predict(lasso.model , type = "coefficients" ,
-                              s = lambda.lasso.opt)[-1]
-       n.coefs <- sum(lasso.coefs != 0)
+       lambda.elnet.try <- exp(seq(log(0.01) , log(1400) , length.out = 100))
+       #elnet model
+       elnet.model <- cv.glmnet(X , Y , family = "gaussian" ,
+                                lambda = lambda.elnet.try , alpha = 0.5)
+       lambda.elnet.opt <- elnet.model$lambda.min
+       elnet.coefs <- predict(elnet.model , type = "coefficients" ,
+                              s = lambda.elnet.opt)[-1]
+       n.coefs <- sum(elnet.coefs != 0)
        
        #specify test data
        test.X <- as.matrix(data$test[ , -c(1 , 15)])
@@ -40,7 +40,7 @@ lasso.sim.fnct <- function(data) {
        test.Y <- data$test$y.net
        
        #apply to test set
-       pred.y <- test.X %*% lasso.coefs
+       pred.y <- test.X %*% elnet.coefs
        #cat("pred.y = " , pred.y , "\n")
        resid <- pred.y - test.Y
        resid.sq <- resid^2
@@ -49,9 +49,9 @@ lasso.sim.fnct <- function(data) {
 
        #initialize important info dataframe
        #put conditions, model info, and metrics into list
-       return(list(model = list(full.model = lasso.model , 
-                                lambda = lambda.lasso.opt , 
-                                coefs = lasso.coefs) , 
+       return(list(model = list(full.model = elnet.model , 
+                                lambda = lambda.elnet.opt , 
+                                coefs = elnet.coefs) , 
                    metrics = list(mse = mse , 
                                    n.coefs = n.coefs
                                   )
@@ -64,9 +64,9 @@ lasso.sim.fnct <- function(data) {
 
 
 #run across full dataset
-lasso.full <- GDP %>%   
-       map(safely(lasso.sim.fnct))
+elnet.full <- GDP %>%   
+       map(safely(elnet.sim.fnct))
 
-saveRDS(lasso.full , "/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Applied_Storage/lasso_GDP.RData")
+saveRDS(elnet.full , "/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Applied_Storage/elnet_GDP.RData")
 
 
