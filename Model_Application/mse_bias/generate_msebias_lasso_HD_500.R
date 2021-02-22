@@ -4,10 +4,10 @@ library(magrittr)
 library(purrr)
 
 #load test set
-test500.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/testset_500_021721.RData")
+test500.data <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/testset_HD_021721.RData")
 
 #load model data
-lasso500.data <- readRDS("/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/lasso_500.RData")
+lasso500.data <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/lasso_HD_500.RData")
 
 combined.data <- list()
 #combine data
@@ -37,6 +37,8 @@ msebias <- function(data) {
   sum.coefs.dif.sq <- sum(coefs.dif.sq)
   coefs.bias <- sum.coefs.dif.sq / 4
   cat("coefs.bias = " , coefs.bias , "\n")
+  fpr <- data$result$important$info$fpr
+  fnr <- data$result$important$info$fnr
   
   return(data.frame(cbind(n = conditions[1] ,
                    p = conditions[2] ,
@@ -46,7 +48,9 @@ msebias <- function(data) {
                    h = conditions[6] ,
                    data.seed = conditions[7] ,
                    mse = mse ,
-                   coefs.bias = coefs.bias
+                   coefs.bias = coefs.bias , 
+                   fpr = fpr , 
+                   fnr = fnr
                    ) 
                    ) 
          )
@@ -56,4 +60,4 @@ msebias <- function(data) {
 lasso.mse.bias.HALF <- combined.data %>%   
   map(safely(msebias))
 
-saveRDS(lasso.mse.bias.HALF , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/mse_bias/msebias_lasso_500.RData")
+saveRDS(lasso.mse.bias.HALF , "/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/mse_bias/msebias_lasso_HD_500.RData")
