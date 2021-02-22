@@ -95,7 +95,7 @@ ladlasso.sim.fnct <- function(data) {
 
 
 #run across full dataset
-ladlasso.full <- ribo[1:2] %>%   
+ladlasso.full <- ribo %>%   
        map(safely(ladlasso.sim.fnct))
 
 saveRDS(ladlasso.full , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Applied_Storage/SNCDladlasso_ribo.RData")

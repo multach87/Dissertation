@@ -95,7 +95,7 @@ huberlasso.sim.fnct <- function(data) {
 
 
 #run across full dataset
-huberlasso.full <- ribo[1:2] %>%   
+huberlasso.full <- ribo %>%   
        map(safely(huberlasso.sim.fnct))
 
 saveRDS(huberlasso.full , "/Users/Matt Multach/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Applied_Storage/SNCDhuberlasso_ribo.RData")
