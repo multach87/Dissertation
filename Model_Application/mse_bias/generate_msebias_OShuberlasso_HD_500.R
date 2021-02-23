@@ -7,7 +7,7 @@ library(purrr)
 test500.data <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/testset_HD_021721.RData")
 
 #load model data
-OShuberlasso500.data <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/OShuberlasso_500.RData")
+OShuberlasso500.data <- readRDS("/Users/Matt/Dropbox/USC_Grad2/Courses/Dissertation/Dissertation_Git/Data_Storage/Full_results/OSHuberLasso_HD_500.RData")
 
 combined.data <- list()
 #combine data
